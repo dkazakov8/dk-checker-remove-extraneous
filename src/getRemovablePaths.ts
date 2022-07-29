@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-restricted-imports
-import get from 'lodash/get';
+import get from 'lodash.get';
 
 export function getRemovablePaths(params: {
   data: any;
@@ -10,35 +9,33 @@ export function getRemovablePaths(params: {
   pathByArray?: Array<string>;
   pathsOptimized?: Array<string>;
 }): Array<string> {
-  let { data, prevPath = '', paths, levelIndex = 0, pathByArray, pathsOptimized = [] } = params;
+  const { data, prevPath, paths, levelIndex = 0, pathByArray, pathsOptimized = [] } = params;
 
   paths.forEach((child, index) => {
-    let path = '';
-    const isZeroLevel = levelIndex === 0;
+    const childSplitByArrayIndex = pathByArray || child.split(/\[[0-9]+]\./);
+    const currentPath = childSplitByArrayIndex![levelIndex];
+    const nextPath = childSplitByArrayIndex![levelIndex + 1];
 
-    if (isZeroLevel) {
-      pathByArray = child.split(/\[[0-9]+]\./);
-      path = pathByArray[levelIndex];
-    } else {
-      path = `${prevPath}[${index}].${pathByArray![levelIndex]}`;
-    }
+    const pathOptimized = prevPath != null ? `${prevPath}[${index}].${currentPath}` : currentPath;
 
-    if (!pathByArray![levelIndex + 1]) {
-      if (typeof get(data, path) === 'undefined') return;
+    if (!nextPath) {
+      if (typeof get(data, pathOptimized) === 'undefined') return;
 
       // eslint-disable-next-line consistent-return
-      return pathsOptimized.push(path);
+      return pathsOptimized.push(pathOptimized);
     }
 
-    const arr = get(isZeroLevel ? data : child, pathByArray![levelIndex]) as Array<string>;
+    const arr = !currentPath
+      ? data
+      : (get(levelIndex === 0 ? data : child, currentPath) as Array<string>);
 
     // eslint-disable-next-line consistent-return
     return getRemovablePaths({
       data,
-      prevPath: path,
+      prevPath: pathOptimized,
       paths: arr,
       levelIndex: levelIndex + 1,
-      pathByArray,
+      pathByArray: childSplitByArrayIndex,
       pathsOptimized,
     });
   });

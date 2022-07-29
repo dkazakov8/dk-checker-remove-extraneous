@@ -2,17 +2,19 @@
   "name": "dk-checker-remove-extraneous",
   "author": "Dmitry Kazakov",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "2.0.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dkazakov8/dk-checker-remove-extraneous.git"
   },
   "description": "Utility for removing extraneous params via ts-interface-checker",
   "scripts": {
+    "upd": "rm -rf ./node_modules&&pnpm i --prefer-offline",
     "analyze:js": "eslint --ignore-path .formatignore --ext \".js,.ts,.tsx\" ./",
     "format:js": "eslint --ignore-path .formatignore --ext \".js,.ts,.tsx\" --fix",
     "build": "rm -rf ./dist&&tsc --project tsconfig-compile.json",
     "test": "nyc mocha",
+    "check-types": "tsc",
     "prepublishOnly": "yarn build",
     "posttest": "nyc report --reporter=json"
   },
@@ -21,26 +23,28 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "set -e&&yarn test&&git add coverage&&lint-staged"
+      "pre-commit": "set -e&&pnpm run test&&git add coverage&&lint-staged"
     }
   },
   "dependencies": {
-    "lodash": "4.17.21"
+    "lodash.unset": "4.5.2",
+    "lodash.get": "4.4.2"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.178",
     "@types/chai": "4.3.0",
     "@types/mocha": "9.1.0",
     "@types/node": "17.0.17",
+    "@types/lodash.unset": "4.5.7",
+    "@types/lodash.get": "4.4.7",
     "chai": "4.3.6",
-    "dk-eslint-config": "1.1.5",
+    "dk-eslint-config": "2.0.2",
     "husky": "4.3.8",
-    "lint-staged": "12.1.7",
+    "lint-staged": "13.0.3",
     "mocha": "9.2.0",
     "nyc": "15.1.0",
-    "ts-node": "10.5.0",
-    "typescript": "4.5.5",
-    "ts-interface-checker": "1.0.2"
+    "typescript": "4.7.4",
+    "ts-interface-checker": "1.0.2",
+    "@swc-node/register": "1.5.0"
   },
   "bugs": {
     "url": "https://github.com/dkazakov8/dk-checker-remove-extraneous/issues"

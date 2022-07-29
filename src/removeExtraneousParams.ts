@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-restricted-imports
-import unset from 'lodash/unset';
+import unset from 'lodash.unset';
 import { Checker, IErrorDetail } from 'ts-interface-checker';
 
 import { getRemovablePaths } from './getRemovablePaths';
@@ -31,7 +30,7 @@ export function removeExtraneousParams(params: {
 
   let extraneousPaths = extraneousParams
     .filter(({ message }) => message === 'is extraneous')
-    .map(({ path }) => path.replace('value.', ''));
+    .map(({ path }) => path.replace(/^value\.?/, ''));
 
   if (extraneousPaths.length === 0) return data;
 
